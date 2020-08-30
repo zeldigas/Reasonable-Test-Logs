@@ -14,6 +14,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <name>Reasonable Test Logs</name>
+    <description>Junit5 test execution listener that hides log events for "green" tests.</description>
+    <url>https://github.com/zeldigas/Reasonable-Test-Logs</url>
+
     <scm>
         <connection>scm:git:git@github.com:zeldigas/reasonable-test-logs.git</connection>
         <developerConnection>scm:git:git@github.com:zeldigas/reasonable-test-logs.git</developerConnection>
