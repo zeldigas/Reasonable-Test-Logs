@@ -7,7 +7,15 @@ import org.junit.platform.launcher.TestPlan;
 
 public class LogExecutionListener implements TestExecutionListener {
 
-    private LoggingController loggingController = new LoggingControllerImpl();
+    private LoggingController loggingController;
+
+    public LogExecutionListener() {
+        this(LoggingController.getInstance());
+    }
+
+    public LogExecutionListener(LoggingController loggingController) {
+        this.loggingController = loggingController;
+    }
 
     public void testPlanExecutionStarted(TestPlan testPlan) {
         loggingController.startCapture();

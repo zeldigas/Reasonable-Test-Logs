@@ -1,6 +1,13 @@
 package com.github.zeldigas.rtlogs;
 
 public class NopLoggingController implements LoggingController {
+
+    private final boolean report;
+
+    public NopLoggingController(boolean report) {
+        this.report = report;
+    }
+
     @Override
     public void enter(String execution) {
         report("Execution started: " + execution);
@@ -27,6 +34,8 @@ public class NopLoggingController implements LoggingController {
     }
 
     private void report(String msg) {
-        System.out.println("[" + Thread.currentThread().getName() + "] NopLoggingController: " + msg);
+        if (report) {
+            System.out.println("[" + Thread.currentThread().getName() + "] NopLoggingController: " + msg);
+        }
     }
 }

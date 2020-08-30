@@ -5,7 +5,7 @@ Junit5 test execution listener that hides log events for "green" tests.
 ## Rationale
 
 Have you ever faced with the logging noise during your project build? Maybe you had opportunity to download tens 
-megabytes of log to analyze issue just because some chatty package has enabled DEBUG logging "in case of something goes wrong"?
+megabytes of log to analyze issue just because DEBUG level was enabled on some chatty package "in case of something goes wrong"?
 Big chance you did, if your project uses some logging framework (like slf4j), and you write unit tests. 
 
 The reason is simple - logs allow you to get extra information if something goes wrong, 
@@ -39,12 +39,33 @@ engine, it will work as well.
 Right now only Logback is supported, although it should be possible to add support for other frameworks as well (e.g. log4j2)
 in case of need and request from community.
 
+### Configuration
+Default behavior for listener is to work only when running via build system (e.g. maven) execution and do nothing with logs
+when executed from IDE's run-test option. This provides reasonable balance between log amount and usability - IDE is usually 
+smart enough to provide good navigation in logs and show only relevant info.
+
+This can be adjusted with defining configuration properties in the following ways (in the order of priority):
+1. `reasonable-test-logs.properties` in root of classpath
+2. System properties (one specified with `-D` key)
+3. Environment variables
+
+| Property name | Env variable format | Description |
+|---------------|---------------------|-------------|
+| `rtlogs.mode` | `RTLOGS_MODE` | Type of listener to use. Possible options: <br/> `auto` -  "default" mode that disables logic in IDE and enables in regular build system run. <br/> `nop` - explicit NOP mode (IDE mode) <br/> `reasonable` - explicit logs processing mode (always build system) |
+| `rtlogs.debug` | `RTLOGS_DEBUG` | Used in NOP mode for listener debugging purposes |    
+
+### Limitations
+It is assumed that tests are executed in sequential manner. Parallel test execution support was not researched so far. 
 
 ## Examples
 
 Check `example` directory for various test-samples. The simplest way to run it -- execute the following command from repo root:
 ```
 mvn clean package
+```
+Take a look at an amount of logs and then compare it to the mode when listener is disabled:
+```
+mvn clean package -Drtlogs.mode=nop
 ```
 
 ## Roadmap
@@ -61,4 +82,18 @@ in build system (e.g. surefire params for junit5).
 
 Anyway, some techniques published on [github](https://github.com/nt-ca-aqe/testit-testutils/tree/master/testutils-logsuppressor-logback)
 were useful.
+
+# Development
+
+## Release
+
+1. Make sure your `~/.m2/settings.xml` contains
+  - profile with property `gpg.keyname` valid gpg key id
+  - server definition with id `ossrh` with valid credentials to nexus oss repo
+2. Upload of artifacts is as simple as:
+```bash
+cd reasonable-test-logs
+mvn clean deploy -Prelease
+```
+
   
