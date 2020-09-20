@@ -31,6 +31,11 @@ public class ErrorTest {
     @Test
     public void testFailure() {
         log.info("Log in test that fails");
+        try {
+            throw new RuntimeException("something went wrong");
+        }catch (Exception ex){
+            log.error("Logging exception", ex);
+        }
         Assert.assertTrue("assertion failure", 1 == 2);
     }
 

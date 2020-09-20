@@ -31,6 +31,11 @@ public class SuccessTest {
     @Test
     public void successTest() {
         log.info("Log in test");
+        try {
+            throw new RuntimeException("something went wrong");
+        }catch (Exception ex){
+            log.error("I'm ignored when reasonable test logs is used :)", ex);
+        }
         Assert.assertTrue("This is good", 1 == 1);
     }
 }

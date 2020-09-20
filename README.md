@@ -27,8 +27,6 @@ If your codebase uses supported frameworks (see prerequisites [below](#prerequis
 </dependency>
 ```
 
-**NB**: Jar is not available in maven central yet
-
 ### Prerequisites
 
 #### Test engines
