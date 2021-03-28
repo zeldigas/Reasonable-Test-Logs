@@ -1,17 +1,28 @@
 package com.github.zeldigas.rtlogs;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ConfigTest {
 
+    @BeforeAll
+    static void setup() {
+        clearProperties();
+    }
+
     @AfterEach
-    void tearDown() {
+    void cleanup() {
+        clearProperties();
+    }
+
+    private static void clearProperties() {
         System.clearProperty("rtlogs.mode");
         System.clearProperty("rtlogs.debug");
     }
+
 
     @Test
     void defaultConfig() {
@@ -32,7 +43,7 @@ class ConfigTest {
     void invalidConfigIsIgnored() {
         Config c = Config.load("/bad_file.txt");
 
-        assertEquals(Config.ControllerType.NOP, c.getControllerType());
+        assertEquals(Config.ControllerType.AUTO, c.getControllerType());
         assertFalse(c.isDebug());
     }
 

@@ -2,10 +2,10 @@ package com.github.zeldigas.rtlogs;
 
 public class NopLoggingController implements LoggingController {
 
-    private final boolean report;
+    private final LibraryLogger logger;
 
-    public NopLoggingController(boolean report) {
-        this.report = report;
+    public NopLoggingController(LibraryLoggerFactory libLoggingFactory) {
+        this.logger = libLoggingFactory.get(NopLoggingController.class);
     }
 
     @Override
@@ -34,8 +34,6 @@ public class NopLoggingController implements LoggingController {
     }
 
     private void report(String msg) {
-        if (report) {
-            System.out.println("[" + Thread.currentThread().getName() + "] NopLoggingController: " + msg);
-        }
+        logger.debug(msg);
     }
 }

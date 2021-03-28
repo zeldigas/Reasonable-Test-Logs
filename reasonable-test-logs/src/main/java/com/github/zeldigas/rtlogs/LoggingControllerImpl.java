@@ -11,8 +11,13 @@ import java.util.stream.Collectors;
 
 public class LoggingControllerImpl implements LoggingController {
 
+    private final LibraryLogger logger;
     private final Deque<TestFrame> executionStack = new LinkedList<>();
     private List<AppenderSwitcher> switchers = new ArrayList<>();
+
+    public LoggingControllerImpl(LibraryLoggerFactory factory) {
+        logger = factory.get(LoggingControllerImpl.class);
+    }
 
     @Override
     public void startCapture() {
@@ -53,7 +58,7 @@ public class LoggingControllerImpl implements LoggingController {
         if (executionStack.isEmpty()) return;
 
         if (!execution.equals(executionStack.peek().execution)) {
-            System.err.println("Execution stack order is violated. Expected " + executionStack.peek().execution + ", but was " + execution);
+            logger.error("Execution stack order is violated. Expected " + executionStack.peek().execution + ", but was " + execution);
             exitAndFlushLogs(execution);
         } else {
             TestFrame frame = executionStack.pop();

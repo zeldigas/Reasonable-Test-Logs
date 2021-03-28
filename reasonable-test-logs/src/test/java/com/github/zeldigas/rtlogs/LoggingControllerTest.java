@@ -3,6 +3,7 @@ package com.github.zeldigas.rtlogs;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 import java.util.AbstractMap;
 import java.util.Arrays;
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mockStatic;
 
 class LoggingControllerTest {
 
@@ -28,6 +30,15 @@ class LoggingControllerTest {
     @AfterEach
     void tearDown() {
         preservedProperties.forEach(System::setProperty);
+    }
+
+    @Test
+    void nopControllerWhenLogbackIsMissing() {
+        System.setProperty("rtlogs.mode", "reasonable"); //forcing real controller to be used
+        try (MockedStatic<ExecutionEnvironment> mocked = mockStatic(ExecutionEnvironment.class)) {
+            mocked.when(ExecutionEnvironment::logbackIsAvailable).thenReturn(false);
+            assertTrue(LoggingController.getInstance() instanceof NopLoggingController);
+        }
     }
 
     @Test

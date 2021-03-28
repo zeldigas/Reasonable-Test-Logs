@@ -32,4 +32,16 @@ class ExecutionEnvironmentTest {
         System.setProperty("sun.java.command", "com.intellij.rt.junit.JUnitStarter -ideVersion5 -junit5");
         assertTrue(ExecutionEnvironment.ideMode());
     }
+
+    @Test
+    void classExistsCheck() {
+        assertTrue(ExecutionEnvironment.classExistsInClassPath(ExecutionEnvironment.class.getName()));
+
+        assertFalse(ExecutionEnvironment.classExistsInClassPath(ExecutionEnvironment.class.getName() + "1"));
+    }
+
+    @Test
+    void logbackExistsCheck() {
+        assertTrue(ExecutionEnvironment.logbackIsAvailable());
+    }
 }

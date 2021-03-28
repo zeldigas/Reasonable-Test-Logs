@@ -12,14 +12,22 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class LoggingControllerImplTest {
 
     private TrackingAppender appender;
-    private LoggingControllerImpl controller = new LoggingControllerImpl();
+    private LoggingControllerImpl controller;
 
     @BeforeEach
     void before() throws Exception {
+        LibraryLoggerFactory factory = mock(LibraryLoggerFactory.class);
+        LibraryLogger logger = mock(LibraryLogger.class);
+        when(factory.get(any())).thenReturn(logger);
+        controller = new LoggingControllerImpl(factory);
+
         LoggerContext loggerContext = getLoggerContext();
         loggerContext.reset();
         JoranConfigurator configurator = new JoranConfigurator();
