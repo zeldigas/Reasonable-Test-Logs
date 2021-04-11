@@ -11,16 +11,17 @@ import java.util.stream.Collectors;
 
 public class LoggingControllerImpl implements LoggingController {
 
-    private final LibraryLogger logger;
+    private final LibraryLogger libLogger;
     private final Deque<TestFrame> executionStack = new LinkedList<>();
     private List<AppenderSwitcher> switchers = new ArrayList<>();
 
     public LoggingControllerImpl(LibraryLoggerFactory factory) {
-        logger = factory.get(LoggingControllerImpl.class);
+        libLogger = factory.get(LoggingControllerImpl.class);
     }
 
     @Override
     public void startCapture() {
+        libLogger.debug("Start capturing");
         LoggerContext loggerContext = getLoggerContext();
         switchers = loggerContext.getLoggerList().stream()
                 .map(logger -> {
@@ -48,6 +49,7 @@ public class LoggingControllerImpl implements LoggingController {
 
     @Override
     public void enter(String execution) {
+        libLogger.debug("Enter: "+execution);
         executionStack.push(new TestFrame(
                 execution, switchers.stream().map(AppenderSwitcher::getCollectingAppender).collect(Collectors.toList())
         ));
@@ -55,10 +57,11 @@ public class LoggingControllerImpl implements LoggingController {
 
     @Override
     public void exit(String execution) {
+        libLogger.debug("Exit: "+execution);
         if (executionStack.isEmpty()) return;
 
         if (!execution.equals(executionStack.peek().execution)) {
-            logger.error("Execution stack order is violated. Expected " + executionStack.peek().execution + ", but was " + execution);
+            libLogger.error("Execution stack order is violated. Expected " + executionStack.peek().execution + ", but was " + execution);
             exitAndFlushLogs(execution);
         } else {
             TestFrame frame = executionStack.pop();

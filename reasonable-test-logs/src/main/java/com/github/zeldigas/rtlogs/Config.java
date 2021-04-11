@@ -10,6 +10,7 @@ public class Config {
     private static final String PROPS_PREFIX = "rtlogs.";
     private static final String PROP_CONTROLLER_TYPE = PROPS_PREFIX + "mode";
     private static final String PROP_DEBUG = PROPS_PREFIX + "debug";
+    private static final String PROP_SPRING = PROPS_PREFIX + "disable-spring-boot";
 
     enum ControllerType {
         AUTO, NOP, REASONABLE
@@ -17,10 +18,12 @@ public class Config {
 
     private final ControllerType controllerType;
     private final boolean debug;
+    private final boolean suppressSpring;
 
-    public Config(ControllerType controllerType, boolean debug) {
+    public Config(ControllerType controllerType, boolean debug, boolean suppressSpring) {
         this.controllerType = controllerType;
         this.debug = debug;
+        this.suppressSpring = suppressSpring;
     }
 
     public ControllerType getControllerType() {
@@ -29,6 +32,10 @@ public class Config {
 
     public boolean isDebug() {
         return debug;
+    }
+
+    public boolean isSuppressSpring() {
+        return suppressSpring;
     }
 
     public static Config load() {
@@ -43,7 +50,8 @@ public class Config {
 
         return new Config(
                 ControllerType.valueOf(properties.getProperty(PROP_CONTROLLER_TYPE).toUpperCase()),
-                toBool(properties.getProperty(PROP_DEBUG))
+                toBool(properties.getProperty(PROP_DEBUG)),
+                toBool(properties.getProperty(PROP_SPRING))
         );
     }
 
@@ -77,19 +85,23 @@ public class Config {
         Properties properties = new Properties();
         properties.setProperty(PROP_CONTROLLER_TYPE, "auto");
         properties.setProperty(PROP_DEBUG, "false");
+        properties.setProperty(PROP_SPRING, "true");
         return properties;
     }
 
     private static Properties propertiesFromEnvVars() {
         Properties properties = new Properties();
         Map<String, String> envVars = System.getenv();
-        if (envVars.containsKey("RTLOGS_MODE")) {
-            properties.setProperty(PROP_CONTROLLER_TYPE, envVars.get("RTLOGS_MODE"));
-        }
-        if (envVars.containsKey("RTLOGS_DEBUG")) {
-            properties.setProperty(PROP_DEBUG, envVars.get("RTLOGS_DEBUG"));
-        }
+        putIfPresent(properties, envVars, PROP_CONTROLLER_TYPE, "RTLOGS_MODE");
+        putIfPresent(properties, envVars, PROP_DEBUG, "RTLOGS_DEBUG");
+        putIfPresent(properties, envVars, PROP_SPRING, "RTLOGS_DISABLE_SPRING");
         return properties;
+    }
+
+    private static void putIfPresent(Properties properties, Map<String, String> envVars, String propertyName, String envName){
+        if (envVars.containsKey(envName)) {
+            properties.setProperty(propertyName, envVars.get(envName));
+        }
     }
 
 

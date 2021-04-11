@@ -14,7 +14,7 @@ public class ExecutionEnvironment {
         return val.startsWith("com.intellij.rt.");
     }
 
-    public static boolean logbackIsAvailable() {
+    public static boolean supportedLoggerAvailable() {
         return classExistsInClassPath(SLF4J) && classExistsInClassPath(LOGBACK_CONTEXT);
     }
 

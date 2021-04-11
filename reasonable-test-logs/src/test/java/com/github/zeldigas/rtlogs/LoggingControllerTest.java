@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mockStatic;
 
 class LoggingControllerTest {
@@ -36,7 +37,7 @@ class LoggingControllerTest {
     void nopControllerWhenLogbackIsMissing() {
         System.setProperty("rtlogs.mode", "reasonable"); //forcing real controller to be used
         try (MockedStatic<ExecutionEnvironment> mocked = mockStatic(ExecutionEnvironment.class)) {
-            mocked.when(ExecutionEnvironment::logbackIsAvailable).thenReturn(false);
+            mocked.when(ExecutionEnvironment::supportedLoggerAvailable).thenReturn(false);
             assertTrue(LoggingController.getInstance() instanceof NopLoggingController);
         }
     }
@@ -52,7 +53,29 @@ class LoggingControllerTest {
     void reasonableController() {
         System.setProperty("rtlogs.mode", "reasonable");
 
-        assertTrue(LoggingController.getInstance() instanceof LoggingControllerImpl);
+        LoggingController instance = LoggingController.getInstance();
+        thenControllerIsReasonableWithSpringBootPreventer(instance);
+    }
+
+    @Test
+    void reasonableWithoutSpringPreventer() {
+        System.setProperty("rtlogs.mode", "reasonable");
+        System.setProperty("rtlogs.disable-spring-boot", "false");
+
+        LoggingController instance = LoggingController.getInstance();
+
+        List<LoggingController> items = ((CompositeController) instance).getItems();
+        assertEquals(1, items.size());
+        assertTrue(items.get(0) instanceof LoggingControllerImpl);
+    }
+
+    private void thenControllerIsReasonableWithSpringBootPreventer(LoggingController instance) {
+        assertTrue(instance instanceof CompositeController);
+
+        List<LoggingController> items = ((CompositeController) instance).getItems();
+        assertEquals(2, items.size());
+        assertTrue(items.get(0) instanceof SpringBootRebindPreventer);
+        assertTrue(items.get(1) instanceof LoggingControllerImpl);
     }
 
     @Test
@@ -68,6 +91,8 @@ class LoggingControllerTest {
         System.setProperty("rtlogs.mode", "auto");
         System.setProperty("sun.java.command", "something else");
 
-        assertTrue(LoggingController.getInstance() instanceof LoggingControllerImpl);
+        LoggingController instance = LoggingController.getInstance();
+
+        thenControllerIsReasonableWithSpringBootPreventer(instance);
     }
 }

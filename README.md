@@ -50,7 +50,8 @@ This can be adjusted with defining configuration properties in the following way
 | Property name | Env variable format | Description |
 |---------------|---------------------|-------------|
 | `rtlogs.mode` | `RTLOGS_MODE` | Type of listener to use. Possible options: <br/> `auto` -  "default" mode that disables logic in IDE and enables in regular build system run. <br/> `nop` - explicit NOP mode (IDE mode) <br/> `reasonable` - explicit logs processing mode (always build system) |
-| `rtlogs.debug` | `RTLOGS_DEBUG` | Used in NOP mode for listener debugging purposes |    
+| `rtlogs.debug` | `RTLOGS_DEBUG` | Enables printing of debug messages in listener |    
+| `rtlogs.disable-spring-boot` | `RTLOGS_DISABLE_SPRING` | Controls if SpringBoot logging reconfigurer code is suppressed or not. `true` by default |    
 
 ### Limitations
 It is assumed that tests are executed in sequential manner. Parallel test execution support was not researched so far. 

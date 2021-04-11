@@ -42,6 +42,6 @@ class ExecutionEnvironmentTest {
 
     @Test
     void logbackExistsCheck() {
-        assertTrue(ExecutionEnvironment.logbackIsAvailable());
+        assertTrue(ExecutionEnvironment.supportedLoggerAvailable());
     }
 }
