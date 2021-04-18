@@ -15,6 +15,13 @@ can discard all logged events when test passes and send them to configured appen
 
 This project aims to solve this problem providing this missing piece.
 
+Here are 2 examples of [Spring PetClinic](https://github.com/spring-projects/spring-petclinic) project. 
+First one is default and second is with reasonable test logs enabled:
+
+[![no-reasonable-test-logs](https://asciinema.org/a/407994.svg)](https://asciinema.org/a/407994)
+
+[![with-reasonable-test-logs](https://asciinema.org/a/407995.svg)](https://asciinema.org/a/407995)
+
 ## Usage
 
 If your codebase uses supported frameworks (see prerequisites [below](#prerequisites)), just add test dependency:
@@ -22,7 +29,7 @@ If your codebase uses supported frameworks (see prerequisites [below](#prerequis
 <dependency>
       <groupId>com.github.zeldigas</groupId>
       <artifactId>reasonable-test-logs</artifactId>
-      <version>0.2.0</version>
+      <version>0.3.0</version>
       <scope>test</scope>
 </dependency>
 ```
@@ -66,10 +73,6 @@ Take a look at an amount of logs and then compare it to the mode when listener i
 ```
 mvn clean package -Drtlogs.mode=nop
 ```
-
-## Roadmap
-
-- `0.1.0` - add test coverage for listener code, publish on maven central   
 
 ## Acknowledgments
 As a lot of things in our world, this project is not something unique. Once idea come to my mind, 
